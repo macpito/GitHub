@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script type="text/javascript" src="http://static.tumblr.com/ltal3b5/gehmihgjg/jquery.fancybox.pack.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://static.tumblr.com/ltal3b5/PjKmihgl1/jquery.fancybox.css" media="screen" />
+
+	<script type="text/javascript">
+
+	</script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('.fancybox').fancybox();
+			var n = 50;
+			var x = 0;
+			var t1 = "";
+			var t2 = "";
+			var t3 = "";
+			var tot = 0;
+			var stop = false;
+			function callNext(x) {
+				$.ajax({
+					type: "GET",
+					url: "http://shabuman.tumblr.com/api/read/json",
+					data: { start: x, num: n, type: 'photo' },
+					dataType: "script",
+					success: function () {
+						tot = tumblr_api_read["posts-total"];
+						for (var i = 0; i < tumblr_api_read.posts.length; i++) {
+							if (t1.length > 0 && t2.length > 0 && t3.length > 0) {
+								if ($.inArray(t1, tumblr_api_read.posts[i]['tags']) > -1 && $.inArray(t2, tumblr_api_read.posts[i]['tags']) > -1 && $.inArray(t3, tumblr_api_read.posts[i]['tags']) > -1)
+									$('#results').append('<a class="fancybox" rel="gallery" href="' + tumblr_api_read.posts[i]['photo-url-1280'] + '">' + '<img src="' + tumblr_api_read.posts[i]['photo-url-75'] + '"></a>');
+							}
+							else if (t1.length > 0 && t2.length > 0) {
+								if ($.inArray(t1, tumblr_api_read.posts[i]['tags']) > -1 && $.inArray(t2, tumblr_api_read.posts[i]['tags']) > -1)
+									$('#results').append('<a class="fancybox" rel="gallery" href="' + tumblr_api_read.posts[i]['photo-url-1280'] + '">' + '<img src="' + tumblr_api_read.posts[i]['photo-url-75'] + '"></a>');
+							}
+							else if (t1.length > 0) {
+								if ($.inArray(t1, tumblr_api_read.posts[i]['tags']) > -1)
+									$('#results').append('<a class="fancybox" rel="gallery" href="' + tumblr_api_read.posts[i]['photo-url-1280'] + '">' + '<img src="' + tumblr_api_read.posts[i]['photo-url-75'] + '"></a>');
+							}
+							else
+								$('#results').append('<a class="fancybox" rel="gallery" href="' + tumblr_api_read.posts[i]['photo-url-1280'] + '">' + '<img src="' + tumblr_api_read.posts[i]['photo-url-75'] + '"></a>');
+						}
+					}
+				}).done(function () {
+					if (x < tot && !stop) {
+						x += 50;
+						callNext(x);
+					}
+				})
+			}
+
+			$('#go').click(function () {
+				stop = false;
+				t1 = $('#tag1').val();
+				t2 = $('#tag2').val();
+				t3 = $('#tag3').val();
+				callNext(0);
+			});
+			$('#stop').click(function () {
+				stop = true;
+			});
+			$('#clear').click(function () {
+				$('#results').html("");
+			});
+		});
+	</script>
+</head>
+<body>
+	<div id="results"></div>
+	<input id="tag1" type="text" placeholder="FIRST TAG" />
+	<input id="tag2" type="text" placeholder="SECOND TAG" />
+	<input id="tag3" type="text" placeholder="THIRD TAG" />
+	<div id="go">GO</div>
+	<div id="stop">STOP</div>
+	<div id="clear">CLEAR</div>
+</body>
+</html>
