@@ -16,9 +16,7 @@
 			$('.fancybox').fancybox();
 			var n = 50;
 			var x = 0;
-			var t1 = "";
-			var t2 = "";
-			var t3 = "";
+			var tags = new Array();
 			var tot = 0;
 			var stop = false;
 			function callNext(x) {
@@ -29,38 +27,32 @@
 					dataType: "script",
 					success: function () {
 						tot = tumblr_api_read["posts-total"];
+
 						for (var i = 0; i < tumblr_api_read.posts.length; i++) {
-							if (t1.length > 0 && t2.length > 0 && t3.length > 0) {
-								if ($.inArray(t1, tumblr_api_read.posts[i]['tags']) > -1 && $.inArray(t2, tumblr_api_read.posts[i]['tags']) > -1 && $.inArray(t3, tumblr_api_read.posts[i]['tags']) > -1)
-									$('#results').append('<a class="fancybox" rel="gallery" href="' + tumblr_api_read.posts[i]['photo-url-1280'] + '">' + '<img src="' + tumblr_api_read.posts[i]['photo-url-75'] + '"></a>');
+							var match = true;
+							for (var z = 0; z < tags.length; z++) {
+								if ($.inArray(tags[z], tumblr_api_read.posts[i]['tags']) < 0) {
+									match = false;
+									break;
+								}
 							}
-							else if (t1.length > 0 && t2.length > 0) {
-								if ($.inArray(t1, tumblr_api_read.posts[i]['tags']) > -1 && $.inArray(t2, tumblr_api_read.posts[i]['tags']) > -1)
-									$('#results').append('<a class="fancybox" rel="gallery" href="' + tumblr_api_read.posts[i]['photo-url-1280'] + '">' + '<img src="' + tumblr_api_read.posts[i]['photo-url-75'] + '"></a>');
-							}
-							else if (t1.length > 0) {
-								if ($.inArray(t1, tumblr_api_read.posts[i]['tags']) > -1)
-									$('#results').append('<a class="fancybox" rel="gallery" href="' + tumblr_api_read.posts[i]['photo-url-1280'] + '">' + '<img src="' + tumblr_api_read.posts[i]['photo-url-75'] + '"></a>');
-							}
-							else
+							if(match)
 								$('#results').append('<a class="fancybox" rel="gallery" href="' + tumblr_api_read.posts[i]['photo-url-1280'] + '">' + '<img src="' + tumblr_api_read.posts[i]['photo-url-75'] + '"></a>');
 						}
-					}
-				}).done(function () {
-					if (x < tot && !stop) {
-						x += 50;
-						callNext(x);
-					}
-					else
-						$('#loading').removeClass('loading');
-				})
+						}
+					}).done(function () {
+						if (x < tot && !stop) {
+							x += 50;
+							callNext(x);
+						}
+						else
+							$('#loading').removeClass('loading');
+					})
 			}
 
 			$('#go').click(function () {
 				stop = false;
-				t1 = $('#tag1').val();
-				t2 = $('#tag2').val();
-				t3 = $('#tag3').val();
+				tags = $('#commaTags').val().split(',');
 				callNext(0);
 				$('#loading').addClass('loading');
 			});
@@ -70,10 +62,10 @@
 			$('#clear').click(function () {
 				$('#results').html("");
 				$('#done').css('display', 'none');
-				$('.tag').val('');
+				$('#commaTags').val('');
 
 			});
-			$('.tag').on('keypress', function (e) {
+			$('#commaTags').on('keypress', function (e) {
 				var code = e.keyCode || e.which;
 				if (code == 13) {
 					$('#go').click();
@@ -82,7 +74,7 @@
 		});
 	</script>
 	<style>
-		#go, #stop, #clear, #done
+		#go, #stop, #clear
 		{
 			float: left;
 			width: 150px;
@@ -92,21 +84,28 @@
 			margin: 0 5px 5px 0;
 			background-color: darkgrey;
 		}
+
 		#tags
 		{
 			float: left;
+		}
+		#commaTags
+		{
+			width: 300px;
 		}
 		#loading
 		{
 			width: 40px;
 			height: 40px;
-			float:left;
+			float: left;
 			margin: 0 5px;
 		}
+
 		.loading
 		{
 			background: url(http://i.minus.com/iLOtx7xvXdAMH.gif) no-repeat;
 		}
+
 		#buttons
 		{
 			float: left;
@@ -115,9 +114,7 @@
 </head>
 <body>
 	<div id="tags">
-		<input id="tag1" class="tag" type="text" placeholder="FIRST TAG" />
-		<input id="tag2" class="tag" type="text" placeholder="SECOND TAG" />
-		<input id="tag3" class="tag" type="text" placeholder="THIRD TAG" />
+		<input id="commaTags" type="text" placeholder="Comma Delimited Tags" />
 	</div>
 	<div id="loading"></div>
 	<div id="buttons">
