@@ -52,7 +52,7 @@
 						callNext(x);
 					}
 					else
-						$('#done').css('display', 'visible');
+						$('#loading').removeClass('loading');
 				})
 			}
 
@@ -62,6 +62,7 @@
 				t2 = $('#tag2').val();
 				t3 = $('#tag3').val();
 				callNext(0);
+				$('#loading').addClass('loading');
 			});
 			$('#stop').click(function () {
 				stop = true;
@@ -74,8 +75,7 @@
 			});
 			$('.tag').on('keypress', function (e) {
 				var code = e.keyCode || e.which;
-				if (code == 13)
-				{
+				if (code == 13) {
 					$('#go').click();
 				}
 			});
@@ -92,6 +92,25 @@
 			margin: 0 5px 5px 0;
 			background-color: darkgrey;
 		}
+		#tags
+		{
+			float: left;
+		}
+		#loading
+		{
+			width: 40px;
+			height: 40px;
+			float:left;
+			margin: 0 5px;
+		}
+		.loading
+		{
+			background: url(http://i.minus.com/iLOtx7xvXdAMH.gif) no-repeat;
+		}
+		#buttons
+		{
+			float: left;
+		}
 	</style>
 </head>
 <body>
@@ -100,10 +119,12 @@
 		<input id="tag2" class="tag" type="text" placeholder="SECOND TAG" />
 		<input id="tag3" class="tag" type="text" placeholder="THIRD TAG" />
 	</div>
-	<div id="go">GO</div>
-	<div id="stop">STOP</div>
-	<div id="clear">CLEAR</div>
-	<div id="done" style="display: none; color: red; clear: both;">ALL DONE!</div>
+	<div id="loading"></div>
+	<div id="buttons">
+		<div id="go">GO</div>
+		<div id="stop">STOP</div>
+		<div id="clear">CLEAR</div>
+	</div>
 	<div id="results" style="clear: both;"></div>
 </body>
 </html>
