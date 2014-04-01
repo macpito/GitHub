@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -51,6 +51,8 @@
 						x += 50;
 						callNext(x);
 					}
+					else
+						$('#done').css('display', 'visible');
 				})
 			}
 
@@ -66,17 +68,42 @@
 			});
 			$('#clear').click(function () {
 				$('#results').html("");
+				$('#done').css('display', 'none');
+				$('.tag').val('');
+
+			});
+			$('.tag').on('keypress', function (e) {
+				var code = e.keyCode || e.which;
+				if (code == 13)
+				{
+					$('#go').click();
+				}
 			});
 		});
 	</script>
+	<style>
+		#go, #stop, #clear, #done
+		{
+			float: left;
+			width: 150px;
+			cursor: pointer;
+			text-align: center;
+			border: solid 3px blue;
+			margin: 0 5px 5px 0;
+			background-color: darkgrey;
+		}
+	</style>
 </head>
 <body>
-	<div id="results"></div>
-	<input id="tag1" type="text" placeholder="FIRST TAG" />
-	<input id="tag2" type="text" placeholder="SECOND TAG" />
-	<input id="tag3" type="text" placeholder="THIRD TAG" />
+	<div id="tags">
+		<input id="tag1" class="tag" type="text" placeholder="FIRST TAG" />
+		<input id="tag2" class="tag" type="text" placeholder="SECOND TAG" />
+		<input id="tag3" class="tag" type="text" placeholder="THIRD TAG" />
+	</div>
 	<div id="go">GO</div>
 	<div id="stop">STOP</div>
 	<div id="clear">CLEAR</div>
+	<div id="done" style="display: none; color: red; clear: both;">ALL DONE!</div>
+	<div id="results" style="clear: both;"></div>
 </body>
 </html>
