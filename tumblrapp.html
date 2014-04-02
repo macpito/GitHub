@@ -23,14 +23,14 @@
 				$.ajax({
 					type: "GET",
 					url: "http://shabuman.tumblr.com/api/read/json",
-					data: { start: x, num: n, type: 'photo' },
+					data: { start: x, num: n, type: 'photo', tagged: tags[0] },
 					dataType: "script",
 					success: function () {
 						tot = tumblr_api_read["posts-total"];
 
 						for (var i = 0; i < tumblr_api_read.posts.length; i++) {
 							var match = true;
-							for (var z = 0; z < tags.length; z++) {
+							for (var z = 1; z < tags.length; z++) {
 								if ($.inArray(tags[z], tumblr_api_read.posts[i]['tags']) < 0) {
 									match = false;
 									break;
