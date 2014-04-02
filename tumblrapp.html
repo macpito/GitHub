@@ -17,7 +17,7 @@
 			var n = 50;
 			var x = 0;
 			var tags = new Array();
-			var tot = 0;
+			var cnt = 0;
 			var stop = false;
 			function callNext(x) {
 				$.ajax({
@@ -26,8 +26,7 @@
 					data: { start: x, num: n, type: 'photo', tagged: tags[0] },
 					dataType: "script",
 					success: function () {
-						tot = tumblr_api_read["posts-total"];
-
+						cnt = tumblr_api_read.posts.length;
 						for (var i = 0; i < tumblr_api_read.posts.length; i++) {
 							var match = true;
 							for (var z = 1; z < tags.length; z++) {
@@ -40,8 +39,8 @@
 								$('#results').append('<a class="fancybox" rel="gallery" href="' + tumblr_api_read.posts[i]['photo-url-1280'] + '">' + '<img src="' + tumblr_api_read.posts[i]['photo-url-75'] + '"></a>');
 						}
 						}
-					}).done(function () {
-						if (x < tot && !stop) {
+				}).done(function () {
+						if (cnt != 0 && !stop) {
 							x += 50;
 							callNext(x);
 						}
@@ -62,8 +61,6 @@
 			$('#clear').click(function () {
 				$('#results').html("");
 				$('#done').css('display', 'none');
-				$('#commaTags').val('');
-
 			});
 			$('#commaTags').on('keypress', function (e) {
 				var code = e.keyCode || e.which;
@@ -84,7 +81,10 @@
 			margin: 0 5px 5px 0;
 			background-color: darkgrey;
 		}
-
+		a.fancybox img
+		{
+			width: 75px;
+		}
 		#tags
 		{
 			float: left;
